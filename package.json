@@ -1,0 +1,15 @@
+{
+  "name": "atdd-en-el-front",
+  "version": "1.0.0",
+  "description": "ATDD en el front",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cypress": "^9.4.1",
+    "cypress-cucumber-preprocessor": "^4.3.1"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
+  }
+}
