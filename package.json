@@ -18,7 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "pretest:cypress": "wait-on -t 30000 http-get://localhost:3000",
     "test:cypress": "npx cypress run",

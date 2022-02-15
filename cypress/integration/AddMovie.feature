@@ -7,3 +7,11 @@ Feature: Add Movie to the list
     Given I have no movies in my list
     When I visit the site
     Then I see an empty list
+
+  Scenario: Add a movie to empty list
+    Given I have no movies in my list
+    When I visit the site
+    And I add a movie with name "Matrix"
+    Then I see a list with:
+      | id | Name   |
+      | 1  | Matrix |
