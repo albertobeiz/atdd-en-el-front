@@ -9,7 +9,7 @@ When("I visit the site", () => {
 });
 
 When("I add a movie with name {string}", (movieName) => {
-  cy.get("input[name=name]").type(movieName);
+  cy.get("input[id=name]").type(movieName);
   cy.get("button[type=submit]").click();
 });
 
