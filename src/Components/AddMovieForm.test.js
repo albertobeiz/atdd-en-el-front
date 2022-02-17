@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AddMovieForm from "./AddMovieForm";
 
@@ -26,8 +26,38 @@ test("Hides name required message on correct submit", () => {
   expect(screen.queryByText(NAME_REQUIRED)).toBeNull();
 });
 
-function givenTheComponentIsRendered() {
-  render(<AddMovieForm />);
+test("Shows loader on correct submit", async () => {
+  givenTheComponentIsRendered(() => new Promise(() => {}));
+
+  whenFormIsCorrect();
+  whenFormIsSubmitted();
+
+  expect(screen.queryByText("Añadir película")).toBeNull();
+  expect(screen.getByText("Añadiendo...")).toBeInTheDocument();
+});
+
+test("Shows error message when fails", async () => {
+  givenTheComponentIsRendered(() => Promise.reject("ERROR"));
+
+  whenFormIsCorrect();
+  whenFormIsSubmitted();
+
+  await waitForElementToBeRemoved(screen.queryByText("Añadiendo..."));
+  expect(screen.getByText("No se pudo añadir la película")).toBeInTheDocument();
+});
+
+test("Shows success message", async () => {
+  givenTheComponentIsRendered(() => Promise.resolve());
+
+  whenFormIsCorrect();
+  whenFormIsSubmitted();
+
+  await waitForElementToBeRemoved(screen.queryByText("Añadiendo..."));
+  expect(screen.getByText("¡Película Añadida!")).toBeInTheDocument();
+});
+
+function givenTheComponentIsRendered(onSubmit) {
+  render(<AddMovieForm onSubmit={onSubmit} />);
 }
 
 function whenFormIsSubmitted() {

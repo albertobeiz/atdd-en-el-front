@@ -1,20 +1,30 @@
 import { useState } from "react";
 
-const AddMovieForm = () => {
-  const [submitted, setSubmitted] = useState(false);
+const AddMovieForm = ({ onSubmit }) => {
+  const [status, setStatus] = useState("INITIAL");
   const [name, setName] = useState("");
 
-  const handleForm = (e) => {
+  const handleForm = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setStatus("LOADING");
+
+    try {
+      await onSubmit();
+      setStatus("SUCCESS");
+    } catch (error) {
+      setStatus("ERROR");
+    }
   };
 
   return (
     <form onSubmit={handleForm}>
       <label htmlFor="name">Nombre</label>
       <input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-      {submitted && !name && <div>El nombre es obligatorio</div>}
-      <button type="submit">Añadir película</button>
+      {status !== "INITIAL" && !name && <div>El nombre es obligatorio</div>}
+      {status !== "LOADING" && <button type="submit">Añadir película</button>}
+      {status === "LOADING" && <div>Añadiendo...</div>}
+      {status === "ERROR" && <div>No se pudo añadir la película</div>}
+      {status === "SUCCESS" && <div>¡Película Añadida!</div>}
     </form>
   );
 };

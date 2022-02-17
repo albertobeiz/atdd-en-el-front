@@ -9,8 +9,14 @@ When("I visit the site", () => {
 });
 
 When("I add a movie with name {string}", (movieName) => {
+  cy.intercept({ url: "/movies/", method: "POST" }, {}).as("postMovie");
+
   cy.get("input[id=name]").type(movieName);
   cy.get("button[type=submit]").click();
+
+  cy.wait("@postMovie")
+    .its("request.body")
+    .should("deep.equal", JSON.stringify({ name: movieName }));
 });
 
 Then("I see an empty list", () => {
