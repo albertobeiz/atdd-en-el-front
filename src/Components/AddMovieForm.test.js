@@ -56,6 +56,17 @@ test("Shows success message", async () => {
   expect(screen.getByText("¡Película Añadida!")).toBeInTheDocument();
 });
 
+test("Calls onSubmit with correct params", async () => {
+  const onSubmit = jest.fn();
+  givenTheComponentIsRendered(onSubmit);
+
+  whenFormIsCorrect();
+  whenFormIsSubmitted();
+
+  await waitForElementToBeRemoved(screen.queryByText("Añadiendo..."));
+  expect(onSubmit).toHaveBeenCalledWith({ name: "Matrix" });
+});
+
 function givenTheComponentIsRendered(onSubmit) {
   render(<AddMovieForm onSubmit={onSubmit} />);
 }

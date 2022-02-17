@@ -13,5 +13,5 @@ Feature: Add Movie to the list
     When I visit the site
     And I add a movie with name "Matrix"
     Then I see a list with:
-      | id | Name   |
+      | id | name   |
       | 1  | Matrix |

@@ -22,3 +22,10 @@ When("I add a movie with name {string}", (movieName) => {
 Then("I see an empty list", () => {
   cy.contains("No movies in your list");
 });
+
+Then("I see a list with:", (dataset) => {
+  dataset.rawTable.slice(1).forEach(([index, movieName]) => {
+    cy.contains(index);
+    cy.contains(movieName);
+  });
+});

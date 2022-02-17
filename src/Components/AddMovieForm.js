@@ -9,7 +9,7 @@ const AddMovieForm = ({ onSubmit }) => {
     setStatus("LOADING");
 
     try {
-      await onSubmit();
+      await onSubmit({ name });
       setStatus("SUCCESS");
     } catch (error) {
       setStatus("ERROR");

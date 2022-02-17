@@ -4,8 +4,11 @@ import AddMovieForm from "./Components/AddMovieForm";
 function App() {
   return (
     <div>
-      <AddMovieForm onSubmit={() => new Promise((resolve) => setTimeout(resolve, 5))} />
-      <div>No movies in your list</div>
+      <AddMovieForm
+        onSubmit={({ name }) =>
+          fetch("/movies/", { method: "POST", body: JSON.stringify({ name }) })
+        }
+      />
     </div>
   );
 }
