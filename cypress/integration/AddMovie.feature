@@ -15,3 +15,14 @@ Feature: Add Movie to the list
     Then I see a list with:
       | id | name   |
       | 1  | Matrix |
+
+  Scenario: Add a movie to a list with items
+    Then I have a list with:
+      | id | name |
+      | 1  | Dune |
+    When I visit the site
+    And I add a movie with name "Matrix"
+    Then I see a list with:
+      | id | name   |
+      | 1  | Dune   |
+      | 2  | Matrix |

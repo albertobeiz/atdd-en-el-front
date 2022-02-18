@@ -4,10 +4,6 @@ import { Given, Then, When, Before } from "cypress-cucumber-preprocessor/steps";
 
 let movies = [];
 
-function addMovie(movieName) {
-  movies.push({ id: movies.length + 1, name: movieName });
-}
-
 Before(() => {
   movies = [];
 
@@ -16,12 +12,18 @@ Before(() => {
   });
 
   cy.intercept({ url: "/movies/", method: "POST" }, (req) => {
-    addMovie(req.body.name);
+    movies.push({ id: movies.length + 1, name: req.body.name });
     req.reply({});
   }).as("postMovie");
 });
 
 Given("I have no movies in my list", () => {});
+
+Given("I have a list with:", (dataset) => {
+  dataset.rawTable.slice(1).forEach(([index, movieName]) => {
+    movies.push({ id: index, name: movieName });
+  });
+});
 
 When("I visit the site", () => {
   cy.visit("http://localhost:3000/");
