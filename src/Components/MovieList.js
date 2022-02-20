@@ -1,20 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { MoviesContext } from "../Contexts/MoviesProvider";
 
-const MovieList = ({ getMovies, refresh }) => {
-  const [status, setStatus] = useState("LOADING");
-  const [movies, setMovies] = useState([]);
-
-  useEffect(() => {
-    if (refresh) {
-      setStatus("LOADING");
-      getMovies()
-        .then((movies) => {
-          setStatus("SUCCESS");
-          setMovies(movies);
-        })
-        .catch(() => setStatus("ERROR"));
-    }
-  }, [getMovies, refresh]);
+const MovieList = () => {
+  const { status, movies } = useContext(MoviesContext);
 
   return (
     <div>

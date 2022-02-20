@@ -1,4 +1,5 @@
 import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
+import MoviesProvider from "../Contexts/MoviesProvider";
 import MovieList from "./MovieList";
 
 test("Calls getMovies", () => {
@@ -45,19 +46,21 @@ test("Shows Movie List", async () => {
 });
 
 test("Refreshes Movies", async () => {
-  const movies = [
-    { id: 1, name: "Matrix" },
-    { id: 2, name: "Dune" },
-  ];
-  const getMovies = jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce(movies);
-
-  const { rerender } = givenTheComponentIsRendered(getMovies);
+  const { rerender } = givenTheComponentIsRendered(() => Promise.resolve([]));
 
   await waitForElementToBeRemoved(screen.queryByText("Cargando películas..."));
   expect(screen.getByText("No hay películas añadidas")).toBeInTheDocument();
 
-  rerender(<MovieList getMovies={getMovies} refresh={false} />);
-  rerender(<MovieList getMovies={getMovies} refresh={true} />);
+  const movies = [
+    { id: 1, name: "Matrix" },
+    { id: 2, name: "Dune" },
+  ];
+
+  rerender(
+    <MoviesProvider getMovies={() => Promise.resolve(movies)}>
+      <MovieList />
+    </MoviesProvider>
+  );
   await waitForElementToBeRemoved(screen.queryByText("Cargando películas..."));
 
   movies.forEach((movie) => {
@@ -66,6 +69,10 @@ test("Refreshes Movies", async () => {
   });
 });
 
-function givenTheComponentIsRendered(getMovies, refresh = true) {
-  return render(<MovieList getMovies={getMovies} refresh={refresh} />);
+function givenTheComponentIsRendered(getMovies) {
+  return render(
+    <MoviesProvider getMovies={getMovies}>
+      <MovieList />
+    </MoviesProvider>
+  );
 }

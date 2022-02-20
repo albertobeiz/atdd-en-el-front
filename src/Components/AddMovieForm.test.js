@@ -1,5 +1,6 @@
 import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import MoviesProvider from "../Contexts/MoviesProvider";
 import AddMovieForm from "./AddMovieForm";
 
 const NAME_REQUIRED = "El nombre es obligatorio";
@@ -17,11 +18,21 @@ test("Shows name required message on bad submit", () => {
   expect(screen.getByText(NAME_REQUIRED)).toBeInTheDocument();
 });
 
-test("Hides name required message on correct submit", () => {
+test("Does not call onSubmit on incorrect form", async () => {
+  const onSubmit = jest.fn();
+  givenTheComponentIsRendered(onSubmit);
+
+  whenFormIsSubmitted();
+
+  expect(onSubmit).toHaveBeenCalledTimes(0);
+});
+
+test("Hides name required message on correct submit", async () => {
   givenTheComponentIsRendered();
 
   whenFormIsCorrect();
   whenFormIsSubmitted();
+  await waitForElementToBeRemoved(screen.queryByText("Añadiendo..."));
 
   expect(screen.queryByText(NAME_REQUIRED)).toBeNull();
 });
@@ -68,7 +79,11 @@ test("Calls onSubmit with correct params", async () => {
 });
 
 function givenTheComponentIsRendered(onSubmit) {
-  render(<AddMovieForm onSubmit={onSubmit} />);
+  render(
+    <MoviesProvider addMovie={onSubmit}>
+      <AddMovieForm />
+    </MoviesProvider>
+  );
 }
 
 function whenFormIsSubmitted() {
